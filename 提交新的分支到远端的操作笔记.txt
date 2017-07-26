@@ -1,0 +1,13 @@
+提交PR到指定的分支步骤：
+	1.先找到项目所在的文件夹，右键打开gitbash here
+	2.git pull（从远程获取最新的并merge到本地）
+	3.git checkout 远程分支名（切换到要提交的远程分支上）
+	4.git checkout -b 分支名（创建本地分支并选择分支，可用两条命令代替：git branch 分支名，git checkout 分支名）
+		（若需要删除本地分支：git branch -d 分支名）
+	5.git status（查看仓库的当前状态）
+	5.git add
+	6.git commit
+	6.git push origin 分支名 （将本地分支推送到远程）
+	7.git push（推送到远程）
+	8.git branch -r | grep 相关信息  （可以得到远程的具有相关信息的分支信息）
+	

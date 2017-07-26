@@ -1,0 +1,32 @@
+一、安装
+	（该方法是centos下）
+	1、yum  groupinstall "Development Tools"
+	2、sudo yum install gettext-devel openssl-devel perl-CPAN perl-devel zlib-devel
+	3、wget https://Github.com/Git/Git/archive/v2.3.0.tar.gz
+	4、tar xvf v2.3.0.tar.gz -C 目标文件夹名（可以将压缩包解压到指定的文件夹中）
+二、创建版本库
+	1、git init（找到一个合适的文件夹，练习最好找个空的文件夹，新建一个readme.txt文件）
+	2、git add readme.txt（可以将readme.txt添加到仓库中）
+	3、git commit -m readme.txt（将文件提交到仓库中）
+三、时光机穿梭
+	A、版本回退
+		1、git status（查看仓库当前的状态）
+		2、git diff（当有文件被改动，此命令可以查看具体的改动）
+		3、git log（可以查看历史git操作记录）
+		4、git log --pretty=oneline（可以看到操作记录，并且有每次操作的版本号-->是一大串数字和字母的混合体）
+		5、git reset --hard HEAD^（可以从当前版本回退到上一个版本）
+		6、cat 文件名（用来查询文件具体内容）
+		7、git reset --hard 版本号（指定回到某个版本）
+		8、git reflog（可以查看git每一次的指令）
+		
+	B、工作区和暂存区
+		1、工作区有个隐藏目录.git（可以用ls -ah看到），这个是git的版本库，版本库中有很重要的stage暂存区，还有git创建的分支master
+			git add: 文件-->暂存区
+			git commit:暂存区-->当前分支
+			
+	C、撤销修改
+		1、git checkout -- 文件名
+			（若文件修改后还未被放到暂存区，撤销修改就回到和版本库一模一样的状态
+				若文件已经被放到暂存区，又被修改，撤销修改就回到刚放入暂存区后的状态）
+		2、git reset HEAD 文件名
+			（可以将暂存区的修改撤销掉，重新放回工作区）
