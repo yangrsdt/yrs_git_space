@@ -30,3 +30,8 @@
 				若文件已经被放到暂存区，又被修改，撤销修改就回到刚放入暂存区后的状态）
 		2、git reset HEAD 文件名
 			（可以将暂存区的修改撤销掉，重新放回工作区）
+四、远程仓库
+	A、添加远程库
+		1、git remote add origin git@https://github.com/yangrsdt/yrs_git_space（第一次关联远程库）
+		2、git push -u origin master(第一次推送到远程库)
+	B、克隆远程库
