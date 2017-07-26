@@ -12,7 +12,6 @@ sessionFactory.getCurrentSession().createSQLQuery(String.format("select count(*)
 	3、String.formate(%s,变量)这里%s是占位符
 
 
-
 Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmokeEntity.class).list();
 	1、sessionFactory.getCurrentSession().createCriteria(SmokeEntity.class)创建criteria
 	2、list（）返回全部的查询结果
@@ -22,3 +21,6 @@ instanceof：
 	a instanceof b 表示的含义是a是否b的实例
 		是返回true
 		否返回false
+
+
+实验一下
