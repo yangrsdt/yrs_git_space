@@ -1,26 +1,24 @@
-persist·½·¨Ïà±È½ÏÓësave·½·¨£º
-	persist²»»á»º´æ²¢¿ÉÒÔ³Ö¾Ã»¯
-	save»á»º´æ²¢³Ö¾Ã»¯
+persistæ–¹æ³•ç›¸æ¯”è¾ƒä¸saveæ–¹æ³•ï¼š
+	persistä¸ä¼šç¼“å­˜å¹¶å¯ä»¥æŒä¹…åŒ–
+	saveä¼šç¼“å­˜å¹¶æŒä¹…åŒ–
 
 
 sessionFactory.getCurrentSession().createSQLQuery(String.format("select count(*) from operation %s",condition)).uniqueResult()).intValue();
 
-	1¡¢·µ»ØÒ»¸ö½á¹ûÊ±Ê¹ÓÃuniqueResult()
+	1ã€è¿”å›ä¸€ä¸ªç»“æœæ—¶ä½¿ç”¨uniqueResult()
 
-	2¡¢intValue£¨£©Ê¹Êı×Ö×ª»¯³ÉIntegerÀàĞÍ
+	2ã€intValueï¼ˆï¼‰ä½¿æ•°å­—è½¬åŒ–æˆIntegerç±»å‹
 	
-	3¡¢String.formate(%s,±äÁ¿)ÕâÀï%sÊÇÕ¼Î»·û
+	3ã€String.formate(%s,å˜é‡)è¿™é‡Œ%sæ˜¯å ä½ç¬¦
 
 
 Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmokeEntity.class).list();
-	1¡¢sessionFactory.getCurrentSession().createCriteria(SmokeEntity.class)´´½¨criteria
-	2¡¢list£¨£©·µ»ØÈ«²¿µÄ²éÑ¯½á¹û
+	1ã€sessionFactory.getCurrentSession().createCriteria(SmokeEntity.class)åˆ›å»ºcriteria
+	2ã€listï¼ˆï¼‰è¿”å›å…¨éƒ¨çš„æŸ¥è¯¢ç»“æœ
 
 
-instanceof£º
-	a instanceof b ±íÊ¾µÄº¬ÒåÊÇaÊÇ·ñbµÄÊµÀı
-		ÊÇ·µ»Øtrue
-		·ñ·µ»Øfalse
+instanceofï¼š
+	a instanceof b è¡¨ç¤ºçš„å«ä¹‰æ˜¯aæ˜¯å¦bçš„å®ä¾‹
+		æ˜¯è¿”å›true
+		å¦è¿”å›false
 
-
-ÊµÑéÒ»ÏÂ
