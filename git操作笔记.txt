@@ -35,11 +35,17 @@
 		1、git remote add origin git@https://github.com/yangrsdt/yrs_git_space（第一次关联远程库）
 		2、git push -u origin master(第一次推送到远程库)
 	B、克隆远程库
+		1、git clone URL
 五、分支管理
 	A、创建与合并分支
 		1、查看分支：git branch
 		2、创建分支：git branch <name>
 		3、切换分支：git checkout <name>
 		4、创建+切换分支：git checkout -b <name>
-		5、合并某分支到当前分支：git merge <name>
-		6、删除分支：git branch -d <name>
+		5、合并某分支到当前分支：git merge <name>/git merge --no-ff -m "" <name>
+		6、删除分支/强行删除：git branch -d <name>/git branch -D <name>
+	B、BUG分支
+		1、git stash(将工作现场保存)
+		2、git stash list(查看工作现场)
+		3、git stash pop(回到工作现场)/git stash apply stash@{0}
+	
