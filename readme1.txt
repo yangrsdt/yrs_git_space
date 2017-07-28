@@ -1,5 +1,0 @@
-wwwwwwwwwwwww
-wwwwwqqqqq
-qqqqqqqqqqqqqqqqqqqqqqqqqqqqqeeeee
-eeeeeeeeeeeeeer
-rrrrrrrrrrrrrrrrrrrrrr
