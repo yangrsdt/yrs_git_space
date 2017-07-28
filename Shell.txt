@@ -1,0 +1,109 @@
+SHELL
+	创建一个脚本文件，保存，如：hello.sh
+	chmod +x ./hello.sh(使脚本具有执行权限)
+	
+	一、Shell变量
+		A、Shell变量命名规则(如：my_name="yangrs"/for myname in "yangrs")
+			1、首个字母必须是字母
+			2、中间不能有空格，可以使用下划线
+			3、不能使用标点符号
+			4、不能使用bash中的关键字
+		B、使用变量
+			1、echo $my_name/echo ${my_name} (这里的echo按照我的理解应该相当于java中的输出语句)
+			
+			2、语句赋值使用变量的一种方法：
+				(
+					for my_name in "yangrs";do
+						echo ${yangrs}
+					done
+				)
+		C、只读变量
+			1、readonly修饰,该变量只能被使用不能被修改,删除
+		D、删除变量
+			1、unset 变量名
+		E、Shell字符串
+			1、单引号
+					str='yangrs'
+				
+					注意：
+						a、单引号里的任何字符都会原样输出，单引号字符串中的变量是无效的；
+						b、单引号字串中不能出现单引号（对单引号使用转义符后也不行）。
+					
+			2、双引号
+					str="myname is ${my_name}!"
+					str1="myname is \"$my_name\"!"
+					str2="myname is $my_name!"
+					str3="myname is \"${my_name}\"!"
+					my name is yangrs!	不带转义的带括号
+					my name is "yangrs"!	带转义的不带括号的
+					my name is yangrs!	不带转义的不带括号的
+					my name is "yangrs"!	带转义的带括号的
+					
+					注意:
+						a、双引号里可以有变量
+						b、双引号里可以出现转义字符(这里的转义只是决定输出的语句中有没有双引号)
+			
+			3、拼接字符串
+					string="hello,$my_name!"
+					string1="hello,${my_name}!"
+					echo $string $string1
+					这两者从输出结果上看毫无区别
+					
+			4、提取字符串长度
+					string_length="abcdefg"
+					echo ${#string}
+					
+			5、提取子字符串
+				string_parent="hello world!!"
+				echo ${string_parent:2:5}
+				#输出为:llo w
+				
+				string_parent="helloworld!!"
+				echo ${string_parent:2:5}
+				#输出为:llowo
+				
+				这种方法截取规则为(字符串位置从0开始)：从左边第三位开始截取，总共截取五位
+				
+			6、查找子字符串
+				string_parent="hello world"
+				echo `expr index "$string_parent" ow`
+				
+				这里无论是ow还是od只按第一个查到的位置输出
+				
+		F、Shell数组
+			1、定义数组
+				array=(value0 value1 value2 value3)
+				或
+				array=(
+					value0
+					value1
+					value2
+					value3
+				)
+				或
+				array[0]=value0
+				array[1]=value1
+				array[2]=value2
+				
+			2、读取数组
+				${array[n]}
+				
+				${array[@]}(取出数组中所有元素)
+				
+			3、获取数组长度
+				array=(hello world!)
+				echo ${#array[@]}
+				echo ${#array[*]}
+				#输出为:2(元素个数)
+				
+				echo ${#array[1]}
+				#输出为:6(下标为1的元素的长度)
+		E、Shell注释
+			#为注释符
+			
+
+
+
+			
+				
+				
