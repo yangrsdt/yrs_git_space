@@ -26,3 +26,6 @@ maven常用命令：http://desert3.iteye.com/blog/1320085
 
 
 sed命令学习：http://www.cnblogs.com/ctaixw/p/5860221.html
+
+
+mysql在linux下的安装：http://www.cnblogs.com/bookwed/p/5896619.html

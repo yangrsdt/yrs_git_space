@@ -1,4 +1,5 @@
 SHELL
+
 	创建一个脚本文件，保存，如：hello.sh
 	chmod +x ./hello.sh(使脚本具有执行权限)
 	
@@ -21,39 +22,40 @@ SHELL
 			1、readonly修饰,该变量只能被使用不能被修改,删除
 		D、删除变量
 			1、unset 变量名
-		E、Shell字符串
-			1、单引号
-					str='yangrs'
+	二、Shell字符串
+		A、单引号
+			str='yangrs'
 				
-					注意：
-						a、单引号里的任何字符都会原样输出，单引号字符串中的变量是无效的；
-						b、单引号字串中不能出现单引号（对单引号使用转义符后也不行）。
+			注意：
+				a、单引号里的任何字符都会原样输出，单引号字符串中的变量是无效的；
+				b、单引号字串中不能出现单引号（对单引号使用转义符后也不行）。
 					
-			2、双引号
-					str="myname is ${my_name}!"
-					str1="myname is \"$my_name\"!"
-					str2="myname is $my_name!"
-					str3="myname is \"${my_name}\"!"
-					my name is yangrs!	不带转义的带括号
-					my name is "yangrs"!	带转义的不带括号的
-					my name is yangrs!	不带转义的不带括号的
-					my name is "yangrs"!	带转义的带括号的
+		B、双引号
+			str="myname is ${my_name}!"
+			str1="myname is \"$my_name\"!"
+			str2="myname is $my_name!"
+			str3="myname is \"${my_name}\"!"
+			my name is yangrs!	不带转义的带括号
+			my name is "yangrs"!	带转义的不带括号的
+			my name is yangrs!	不带转义的不带括号的
+			my name is "yangrs"!	带转义的带括号的
 					
-					注意:
-						a、双引号里可以有变量
-						b、双引号里可以出现转义字符(这里的转义只是决定输出的语句中有没有双引号)
+			注意:
+				a、双引号里可以有变量
+				b、双引号里可以出现转义字符(这里的转义只是决定输出的语句中有没有双引号)
 			
-			3、拼接字符串
-					string="hello,$my_name!"
-					string1="hello,${my_name}!"
-					echo $string $string1
-					这两者从输出结果上看毫无区别
+		C、拼接字符串
+			string="hello,$my_name!"
+			string1="hello,${my_name}!"
+			echo $string $string1
+			这两者从输出结果上看毫无区别
 					
-			4、提取字符串长度
-					string_length="abcdefg"
-					echo ${#string}
+		D、提取字符串长度
+			string_length="abcdefg"
+			echo ${#string}
 					
-			5、提取子字符串
+		E、提取子字符串
+			(1)这种方法截取规则为(字符串位置从0开始)：从左边第几位开始截取，总共截取几位
 				string_parent="hello world!!"
 				echo ${string_parent:2:5}
 				#输出为:llo w
@@ -62,35 +64,68 @@ SHELL
 				echo ${string_parent:2:5}
 				#输出为:llowo
 				
-				这种方法截取规则为(字符串位置从0开始)：从左边第三位开始截取，总共截取五位
+			(2)#号截取，删除左边字符，保留右边字符(从左边数删除第一个o及o左边的字符)
+				string_parent="helloworld"
+				echo ${string_parent#*o}
+				#输出为:world
 				
-			6、查找子字符串
-				string_parent="hello world"
-				echo `expr index "$string_parent" ow`
+			(3)##号截取，删除左边字符，保留右边字符(从左边数删除最后一个o及左边的字符)
+				string_parent="helloworld"
+				echo ${string_parent##*o}
+				输出为:rld
 				
-				这里无论是ow还是od只按第一个查到的位置输出
+			(4)%号截取，删除右边字符，保留左边字符(从右边数删除第一个o及右边的字符)
+				string_parent="helloworld"
+				echo ${string_parent%o*}
+				输出为:hellow
 				
-		F、Shell数组
-			1、定义数组
-				array=(value0 value1 value2 value3)
-				或
-				array=(
-					value0
-					value1
-					value2
-					value3
-				)
-				或
-				array[0]=value0
-				array[1]=value1
-				array[2]=value2
+			(5)%号截取，删除右边字符，保留左边字符(从右边数删除最后一个o及右边的字符)
+				string_parent="helloworld"
+				echo ${string_parent%%o*}
+				输出为:hellow
+					
+			(6)从左边第几个字符开始，一直到结束
+				string_parent="helloworld"
+				echo ${string_parent:3}
+				输出为：loworld
+			
+			(7)从右边第几个字符开始，向右截取几位
+				string_parent="helloworld"
+				echo ${string_parent:0-7:7}
+				输出为：loworld
+			
+			(8)从右边第几个字符开始,一直到结束
+				string_parent="helloworld"
+				echo ${string_parent:0-7}
+				输出为：loworld
+					
+		F、查找子字符串
+			string_parent="hello world"
+			echo `expr index "$string_parent" ow`
 				
-			2、读取数组
+			这里无论是ow还是od只按第一个查到的位置输出
+				
+	三、Shell数组
+		A、定义数组
+			array=(value0 value1 value2 value3)
+			或
+			array=(
+				value0
+				value1
+				value2
+				value3
+			)
+			或
+			array[0]=value0
+			array[1]=value1
+			array[2]=value2
+				
+		B、读取数组
 				${array[n]}
 				
 				${array[@]}(取出数组中所有元素)
 				
-			3、获取数组长度
+		C、获取数组长度
 				array=(hello world!)
 				echo ${#array[@]}
 				echo ${#array[*]}
@@ -98,12 +133,40 @@ SHELL
 				
 				echo ${#array[1]}
 				#输出为:6(下标为1的元素的长度)
-		E、Shell注释
+				
+		D、Shell注释
 			#为注释符
+	
+	四、Shell传递参数
+	
+		$#	传递到脚本的参数个数
+		$*	以一个单字符串显示所有向脚本传递的参数。
+		$$	脚本运行的当前进程ID号
+		$!	后台运行的最后一个进程的ID号
+		$@	与$*相同，但是使用时加引号，并在引号中返回每个参数。
+		$-	显示Shell使用的当前选项，与set命令功能相同。
+		$?	显示最后命令的退出状态。0表示没有错误，其他任何值表明有错误。
+	
+	五、Shell基本运算符
+		A、算数运算符
+			+
+			-
+			*
+			/
+			%
+			=
+			==	[$a == $b]条件表达式必须放在方括号之间而且要有空格
+			!=
 			
-
-
+		if [$2 == +] then
+			echo `expr $1 + $3`
+		elif [$2 == -] then
+			echo $1 - $3
+		else 
+			echo "错误!" 
+		fi
 
 			
-				
-				
+			
+			
+		

@@ -1,0 +1,7 @@
+192.168.66.236 x2.datastart.cn
+192.168.66.235 x1.datastart.cn
+192.168.127.220 datasentry-service.default
+192.168.127.203 freeipa-service.default
+192.168.127.202 restest1.gsdjsjdksgalulu.com
+
+http://192.168.127.202:30222/api/emrconfig/hdfs
