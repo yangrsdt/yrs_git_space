@@ -158,13 +158,29 @@ SHELL
 			==	[$a == $b]条件表达式必须放在方括号之间而且要有空格
 			!=
 			
-		if [$2 == +] then
-			echo `expr $1 + $3`
-		elif [$2 == -] then
-			echo $1 - $3
-		else 
-			echo "错误!" 
-		fi
+			a=20
+			b=20
+			c=/
+			if [ "$c" == "+" ] 
+			then
+				echo `expr $a + $b`
+			elif [ "$c" == "-" ]
+			then
+				echo `expr $a - $b`
+			elif [ "$c" == "*" ]
+			then
+				echo `expr $a \* $b`
+			elif [ "$c" == "/" ]
+			then
+				if [ "$b" -eq "0" ]
+				then 
+					echo "无穷大!"
+				else
+					echo `expr $a / $b`
+				fi
+			else
+				echo "错误!" 
+			fi
 
 			
 			
