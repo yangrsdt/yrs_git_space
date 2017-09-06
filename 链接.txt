@@ -29,3 +29,6 @@ sed命令学习：http://www.cnblogs.com/ctaixw/p/5860221.html
 
 
 java的压缩与解压缩文件：https://www.oschina.net/code/snippet_1021818_48130
+
+
+linux安装python：http://www.cnblogs.com/QG-whz/p/6765107.html
