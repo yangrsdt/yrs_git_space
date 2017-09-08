@@ -1,0 +1,408 @@
+Python:
+	一.Python
+		1.数据类型和变量
+			a = 10
+			a = "abc"
+				注：这里变量a不会限定类型
+			PI = 3.1415926
+			通常常量是用大写字母来定义
+			
+			/：这个会得到精确的除法的值
+			//：这个会对得到的值取整
+			
+			len()：得到字符串的长度或者集合的个数
+			
+		2.字符串和编码
+			ord():获取字符的整数表示
+			chr():将编码转换为对应的字符
+			encode():为编码指定的bytes  'ABC'.encode('ascii')
+			decode():将bytes转为str	b'ABC'.decode('ascii')
+			
+			格式化：
+				'hello %s' % 'world'      结果： hello world
+				
+				%d	整数
+				%f	浮点数
+				%s	字符串
+				%x	十六进制整数
+			
+		3.使用list和tuple
+			list列表：
+				list = ['1','2','3']
+				list.insert(1,'4')      将4插入到集合的索引号为1的位置
+				len(list)				集合的个数
+				list.pop(i)				删除索引值为i的集合
+				list.append()			可以追加元素到结合末尾
+			
+			tuple元组：(定义时就要确定元素，其他用法list一样)
+				tuple被定义下来就不可变了
+				tuple = (1,)			当tuple只定义一个元素时，需要加上，消除歧义
+				
+		4.条件判断
+			if :
+			else：
+			
+			if :
+			elif:
+			else:
+			
+		5.循环
+			a.for循环
+				lists = [1,2,3]
+				for list in lists:
+					print(list)
+				
+				计算0-100之和
+					sum = 0
+					for x in range(101):
+						sum = sum + x
+					print(sum)
+			
+			b.while循环
+				sum = 0
+				n = 99
+				while n > 0:
+					sum = sum +n
+					n = n-2
+				print(sum)
+			
+			break:提前退出循环
+			continue:提前结束本轮循环，并直接开始下一轮循环
+		
+		6.dict和set
+			1.dict(相当于map，内部存放的顺序和key放入的顺序呢是没有关系的，一个key只能对应一个value)
+				dict = {"name":"zhangsan","sex":"nan"}
+				
+				判断key是否存在：
+					key in dict				存在true，反之false 
+					dict.get(key)			key不存在则返回none
+					dict.get(key,-1)		key不存在则返回-1
+				
+				删除一个key：
+					dict.pop(key)			可删除key并且删除对应的value
+				
+				dict的特点：
+					a.查找和插入的速度极快，不会随着key的增加而变慢
+					b.需要占用大量的内存，内存浪费多
+				list的特点：
+					a.查找和插入的时间随着元素的增加而增加
+					b.占用空间小，浪费内存很少
+					
+			2.set(是key的集合，不存储value，不能有重复的key)
+				要创建一个set，需要提供一个list作为输入集合：
+				s = set([1,2,3])
+				
+				s.add(key)					添加元素到set中
+				s.remove(key)				从set中删除元素
+				
+				set可以看成数学意义上的无序和无重复元素的集合，因此，两个set可以做数学意义上的交集、并集等操作：
+				s1 = set([1,2,3])
+				s2 = set([1,3,4])
+				s1 & s2
+				s1 | s2
+	
+	二.函数
+		1.调用函数
+			abs()	获取绝对值
+			max()	可以传入多个参数，返回最大的那个
+			int()
+			float()
+			str()
+			bool()	目前测试，当为0或者为空时返回为false
+			
+		2.定义函数
+			求解方程
+				def jisuan(a,b,c):
+					if not (isinstance(a,int) or isinstance(b,int) or isinstance(c,int)):
+						raise TypeError("bad operand type")
+					if b*b < 4*a*c:
+						print("方程无解")
+					elif b*b == 4*a*c:
+						print("方程有两个相同解，为:"+"%.3f" %(-b/(2*a)))
+					else:
+						x = (-b + math.sqrt(b*b-4*a*c)) / (2*a)
+						y = (-b - math.sqrt(b*b-4*a*c)) / (2*a)
+					return x,y
+
+				z = jisuan(2,3,1)
+				print(z)
+			
+		3.函数的参数
+			A.位置参数
+				def power(x,n)
+			B.默认参数
+				def power(x,n=2)
+				
+				def add_end(L=None):
+					if L is None:
+						L = []
+					L.aapend("END")
+					return L
+					
+			！！注意：这里的默认参数必须指向不变对象		
+				
+			C.可变参数
+				def calc(*numbers):					//*numbers便是可变参数的定义方式，在函数内部接收到的是tuple
+					sum = 0
+					for n in numbers:
+						sum = sum + n*n
+					return sum
+				
+			D.关键字参数
+				def person(name,age,**detail):		//**detail是关键字参数的定义方式，在函数内部接收到的是dict(map)
+					print("name:",name,"age:",age,"detail:",detail)
+					print("name:"+name+",""age:"+str(age)+",""detail:"+str(detail))  //这里正常输出必须加上str()
+
+				person("yang",23,city="Hongzhou",address="西湖区")
+			
+			E.命名关键字参数
+				def person(name,age,*,city,job): 	//命名关键字需要一个特殊的分隔符*，*以后的参数被认为是命名关键字参数
+				
+				def person(name,age,*args,city,job)	//如果已经包含了一个可变参数，则不需要一个特殊的分隔符了
+				
+			！！注意：当以上参数有多种以上出现在函数定义中，必须遵循参数定义顺序：位置参数，默认参数，可变参数，命名关键字参数，关键字参数
+																		n		n=2		*n			*，n			**n
+				def person(name,age=23,*args,city,**detail):
+					print("name:"+name+","
+						"age:"+str(age)+","
+						"args:"+str(args)+","
+						"city:"+str(city)+","
+						"detail:"+str(detail))
+
+				person("yang",args=["nanren"],city="Hangzhou",address = "西湖区")		???????这个地方还有问题，需要等待解决												
+				
+		4.递归函数
+			def fact(n):
+				if n==1:
+					return 1
+				return n * fact(n-1)				//这里递归需要注意的是如果n值过大会导致栈溢出
+													//RuntimeError: maximum recursion depth exceeded in comparison
+												
+			(虽然这个方法看起来很厉害，但是由于Python并没有对尾递归做优化，所以还是会栈溢出)
+			解决方法采用尾递归进行优化，尾递归是指在函数返回时调用自身本身，并且return语句不能包含表达式(如上就引入了乘法表达式)
+			def fact(n):
+				return fact_iter(n,1)
+			
+			def fact_iter(num,result):
+				if num == 1:
+					return result
+				return fact_iter(num - 1,num * result)
+			
+			汉诺塔算法：
+				def hannuo(n,a,b,c):
+					if n == 1:
+						move(1,a,c)
+					else:
+						hannuo(n-1,a,c,b)
+						move(n,a,c)
+						hannuo(n-1,b,a,c)
+				
+				i = 1
+				max = 0
+				def move(n,f,t):
+					global i
+					global max
+					if n > max:
+						max = n 
+					print("第%d步：将%d号盘子从%s柱--->%s柱  目前最大盘子为%s" %(i,n,f,t,max))
+					i+=1
+
+				n = int(input())
+				hannuo(n,"A","B","C")
+				
+	三.高级特性
+		1.切片
+			L = []
+			for i in range(20)
+				L.append(i)
+			
+			取L的前三个元素：L[0:3]				//从索引0开始取直到索引3为止，但不包括索引3
+			取L的倒数第二个元素：L[-2:-1]			//倒数第一个元素的索引为-1
+			取L的前十个每两个取一个：L[:10:2]		
+			所有元素每两个取一个：L[::2]	
+			取出所有元素L[:]
+			
+			字符串进行切片操作
+				"abcdefg"[:3]
+					
+			tuple进行切片操作
+				tuple = (1,2,3,4,5)
+				tuple[:3]
+		
+		2.迭代
+			dict:
+			dict = {"a":1,"b":2,"c":3}
+				迭代key：
+					for key in dict:
+						print(key)
+				迭代value：
+					for value in dict.values():
+						print(value)
+				同时迭代key和value：
+					for k,v in dict.items():
+						print(k,v)
+			
+			判断一个对象是不是可迭代对象
+				from collections import Iterable
+				isinstance("abc",Iterable)		//若返回值为true则可迭代
+				
+			list实现下表循环：(这里的enumerate函数可以将list变成索引-元素对)
+				for i,value in enumerate([1,2,3,4]):
+					print(i,value)
+			
+			字符串迭代：
+				for ch in "abcdef":
+					print(ch)
+		
+		3.列表生成式
+			a.list(range(1,11))								//快速生成1-11的list
+			b.[n * n for n in range(1,11)]  				//快速生成1-11的平方的list
+			c.[n * n for n in range(1,11) if n % 2 == 0]  	//筛选出仅偶数的平方
+			d.[m + n for m in "ab" for n in "cd"]			//两层循环生成全排列
+			e.import os
+			  [d for d in os.listdir(".")]					//os.listdir可以列出文件和目录
+			f.[s.lower() for s in "ABC"]					//将字符串变成小写字母
+			
+		4.生成器
+			创建方式：
+				a.g = (n * n for n in range(10))
+				b.斐波那契数列
+					def fib(max):
+						n,a,b = 0,0,1
+						while n < max:
+							yeild b				//这里运行的规律
+							a,b = b,a+b
+							n = n + 1
+						return "done"
+				c.杨辉三角
+					def triangles(max):
+						b,n = [1],0
+						while n < max
+							n += 1
+							yield b
+							b = [1] + [b[i] + b[i+1] for i in range(len(b)-1)] + [1]
+						
+					max = int(input())
+					for i in triangles(max):
+						print(i)
+			
+		5.迭代器
+			判断一个对象是否是Iterator对象：
+			from collections import Iterator
+			isinstance(triangles(max),Iterator)
+			
+			可以被next()函数调用并不断返回下一个值的对象称为迭代器：Iterator
+			
+			iter():可以将Iterable变成Iterator
+			
+			凡是可作用于for循环的对象都是Iterable类型；
+
+			凡是可作用于next()函数的对象都是Iterator类型，它们表示一个惰性计算的序列；
+
+			集合数据类型如list、dict、str等是Iterable但不是Iterator，不过可以通过iter()函数获得一个Iterator对象。
+	
+	四.函数式编程
+		1.高阶函数(一个函数接收另一个函数作为参数，这样的函数称之为高阶函数)
+			变量可以指向函数
+				abs()
+				f = abs
+		
+			传入函数
+				def add(x,y,f):
+					return f(x) + f(y)
+				
+				add(1,2,f)
+				
+			A.map/reduce
+				a.将列表中的名字规范化，首字母大写其余字母小写(用了两种方法)
+					L1 = ["adam","LISA","barT"]
+
+					def normalize(name):
+						#first = name[0].upper()
+						#second = name[1:].lower()
+						#return first + second
+						return name.capitalize()				//capitalize()这个方法是将字符串的第一个字母大写
+					L2 = list(map(normalize,L1))
+					print(L2)
+
+				b.利用reduce()求积
+					from functools import reduce
+
+					def prod(L):
+						return reduce(lambda x,y:x * y,L)		//lambda？？？？？？？后面补上
+					print("3 * 5 * 7 * 9 =",prod([3,5,7,9]))
+
+				c.利用map和reduce将str转为float
+					def str2float(s):
+						L = s.split(".",1)						//以"."切割字符串,切割一次
+						return reduce(lambda x,y:x * 10 + y,map(int,L[0])) + 
+							   reduce(lambda x,y:x * 10 + y,map(int,L[1]))/(10**len(L[1]))
+	
+			B.filter(用于过滤序列，也是接收一个函数和一个序列，函数作用于每一个元素，并根据返回的true or false决定是否删除对应元素)
+				判断回文数
+					def is_palindrome(n):
+						m = list(str(n))
+						for i in range(len(m)):
+							return m[i] == m[len(m)-1]
+
+					output = filter(is_palindrome,range(1,1000))
+					print(list(output))
+			
+			C.sorted(可对list进行排序，key指定的函数将作用于每一个元素上，，并根据key函数返回的结果进行排序)
+				L = [('Bob', 75), ('Adam', 92), ('Bart', 66), ('Lisa', 88)]
+				def by_name(t):
+					return t[0]
+				L = sorted(LL,key = by_name)
+				print(L)
+		
+		2.返回函数(高阶函数还可以将函数作为结果值返回)
+			def lazy_sum(*args):
+				def sum():
+					ax = 0
+					for n in args:
+						ax = ax + n
+					return ax
+				return sum
+			f1 = lazy_sum(1,2,3)
+			f2 = lazy_sum(1,2,3)
+			f1 == f2	结果为： false
+			
+			闭包：
+				def count():
+					fs = []
+					for i in range(1, 4):
+						def f():
+							 return i*i
+						fs.append(f)
+					return fs
+
+				f1, f2, f3 = count()		//每次循环都会创建一个新的函数，然后把创建的3个函数都返回了，但因为用的一直都是局部变量，所以当i变成3时三个函数中的i也全部是3了
+				
+				优化：
+				def count():
+					def f(j):
+						def g():
+							return j*j
+						return g
+					fs = []
+					for i in range(1, 4):
+						fs.append(f(i)) 	// f(i)立刻被执行，因此i的当前值被传入f()
+					return fs
+				
+				利用lambda简化上面优化后的函数	//ps：这个简化简直丧心病狂
+				def count():
+					return list(map(lambda j:lambda:j*j,range(1,4)))		----->		j:对应着f(j)函数的参数，lambda:j*j整体对应着返回的g
+																						lambda:jj拆开来看，冒号前为空对应着g()，j*j对应着函数g()的返回值
+					
+		3.匿名函数(就是一直出现的lambda)
+			def f(x):
+				return x * x
+				
+			用上面这个简单的作为例子，简述一下lambda函数
+			lambda x: x * x	-------------------------> ：号前的x对应上面函数的参数，冒号后的表达式对应着上面的return
+			
+			
+			
+			
+			
+				
