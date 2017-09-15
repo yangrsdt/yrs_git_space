@@ -34,7 +34,7 @@ Python:
 				list.pop(i)				删除索引值为i的集合
 				list.append()			可以追加元素到结合末尾
 			
-			tuple元组：(定义时就要确定元素，其他用法list一样)
+			tuple元组：(定义时就要确定元素，其他用法list一样)03:00
 				tuple被定义下来就不可变了
 				tuple = (1,)			当tuple只定义一个元素时，需要加上，消除歧义
 				
@@ -166,7 +166,7 @@ Python:
 					print("name:"+name+","
 						"age:"+str(age)+","
 						"args:"+str(args)+","
-						"city:"+str(city)+","
+						"city:"+str(city)+","03:00
 						"detail:"+str(detail))
 
 				person("yang",args=["nanren"],city="Hangzhou",address = "西湖区")		???????这个地方还有问题，需要等待解决												
@@ -258,7 +258,7 @@ Python:
 			a.list(range(1,11))								//快速生成1-11的list
 			b.[n * n for n in range(1,11)]  				//快速生成1-11的平方的list
 			c.[n * n for n in range(1,11) if n % 2 == 0]  	//筛选出仅偶数的平方
-			d.[m + n for m in "ab" for n in "cd"]			//两层循环生成全排列
+			d.[m + n for m in "ab" for n in "cd"]			//from character.character 两层循环生成全排列
 			e.import os
 			  [d for d in os.listdir(".")]					//os.listdir可以列出文件和目录
 			f.[s.lower() for s in "ABC"]					//将字符串变成小写字母
@@ -401,8 +401,152 @@ Python:
 			用上面这个简单的作为例子，简述一下lambda函数
 			lambda x: x * x	-------------------------> ：号前的x对应上面函数的参数，冒号后的表达式对应着上面的return
 			
+		4.装饰器(用来在函数运行期间动态增强一个函数的功能)
+			#带参和无参的装饰器
+			import types
+
+			def log(text):
+				if isinstance(text,types.FunctionType):				//判断text是否是函数
+				#if callable(text)									//判断text是否可以被调用和上面功能一样
+					@functools.wraps(text)							//将被增强函数的__name__等属性复制到wrapper函数中，防止某些依赖函数签名的代码执行会出错
+					def wrapper(*args,**kw):
+						print("begin call %s()" % text.__name__)	
+						f = func(*args,**kw)
+						print("end call")
+						return f
+				else:
+					def decorator(func):
+						def wrapper(*args,**kw):
+							print("%s begin call %s()" % (text,func.__name__))
+							f = func(*args,**kw)
+							print("end call")
+							return f
+						return wrapper
+					return decorator
+
+			@log("execute")
+			def now():
+				t = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+				print(t)
+
+			now()
 			
+		5.偏函数
+			function.partial()
 			
+	五.模块
+		1.使用模块
 			
+			作用域
+				如_a和__a则相当于定义为private，不应该被直接引用
 			
+		2.安装第三方模块
+			
+	六.面向对象编程
+		1.类和实例
+			class Student(object):					//类名通常是大写开头的单词，(object)代表着继承的类
 				
+				def __init__(self,name,score):		//这里self永远是__init__方法的的第一个参数。表示创建的实例本身
+					self.name = name
+					self.score = score
+		  数据封装
+		  	class Student(object):
+				
+				def __init__(self,name,score):
+					self.name = name
+					self.score = score
+				
+				def print_s(self):
+					print("%s : %s" % (self.name,self.score))
+				
+		2.访问限制
+			class Student(object):
+				def __init__(self, name, score):
+					self.__name = name				//这里的__name被解释器对外变成了_Student__name
+					self.__score = score
+
+				def print_score(self):
+					print('%s: %s' % (self.__name, self.__score))
+			
+				def get_name(self):
+					return self.__name
+
+				def get_score(self):
+					return self.__score
+			
+				def set_score(self, score):
+        			self.__score = score
+			
+			!!! 这里需要注意__xxx__以双下划线开头和结尾的是特殊变量是可以直接访问的，__xx以双下划线开头的是定义为private变量
+			_xx以单下划线开头的变量外部是可以访问的，但是按照约定当你看到这样的变量请视为私有变量
+			
+		3.继承和多态
+			class Animal(object):
+				def run(self):
+					print("animals are living")
+
+			class Dog(Animal):
+				def run(self):
+					print("dogs are living")
+
+			class Stone(object):
+				def run(self):
+					print("stone is dead")
+
+			def run_s(x):
+				x.run()
+			
+			run_s(Animal())
+			run_s(Dog())
+			run_s(Stone())
+			
+			对于函数run_s(x)并不需要传入具体的类型，只需要传入的参数有run()方法即可
+			
+		4.获取对象信息
+			type():	判断对象类型  type(x) == types.FunctionType 判断x是否是函数
+			isinstance()
+			
+			dir():	获得一个对象的所有属性和方法
+			
+			hasattr(obj,"x")	//obj是否包含属性x
+			getattr()
+			setattr()
+			
+		5.实例属性和类属性
+			def Student(object):
+				name = "Student"	//该属性被称为类属性
+				
+			s = Student()
+			s.name = "test"			//这样类属性会被实例属性屏蔽掉
+	
+	七.面向对象高级编程
+		A.
+			1.使用__slots__
+				class Student(object):
+					pass
+				s = Student()
+				
+				def set_age(self,age):
+					self.age = age
+				
+				//给实例s绑定一个方法，但是对于另一个实例不起作用
+				from types import MethodType
+				s.set_age = MethodType(set_age,s)
+				
+				//给所有实例都绑定方法
+				Student.set_age = set_age
+				
+				class Student(object):
+					__slots__ = ("name","age")			//用tuple定义允许绑定的属性名称，，这种方法仅对当前实例有效，不能作用于子类
+				
+			2.使用@property
+				
+			
+			3.多重继承
+			4.定制类
+			5.使用枚举类
+			6.使用元类
+		B.
+		C.
+		D.
+		

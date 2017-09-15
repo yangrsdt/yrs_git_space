@@ -37,6 +37,9 @@ linux安装python：http://www.cnblogs.com/QG-whz/p/6765107.html
 linux下垃圾清理：http://blog.csdn.net/jx232515/article/details/52997540
 
 
+string reader inputstream:http://blog.csdn.net/u014649598/article/details/53944796
+
+
 
 
 
