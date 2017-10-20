@@ -520,33 +520,707 @@ Python:
 			s.name = "test"			//这样类属性会被实例属性屏蔽掉
 	
 	七.面向对象高级编程
-		A.
-			1.使用__slots__
-				class Student(object):
-					pass
-				s = Student()
-				
-				def set_age(self,age):
-					self.age = age
-				
-				//给实例s绑定一个方法，但是对于另一个实例不起作用
-				from types import MethodType
-				s.set_age = MethodType(set_age,s)
-				
-				//给所有实例都绑定方法
-				Student.set_age = set_age
-				
-				class Student(object):
-					__slots__ = ("name","age")			//用tuple定义允许绑定的属性名称，，这种方法仅对当前实例有效，不能作用于子类
-				
-			2.使用@property
-				
+		1.使用__slots__
+			class Student(object):
+				pass
+			s = Student()
 			
-			3.多重继承
-			4.定制类
-			5.使用枚举类
-			6.使用元类
-		B.
-		C.
-		D.
+			def set_age(self,age):
+				self.age = age
+			
+			//给实例s绑定一个方法，但是对于另一个实例不起作用
+			from types import MethodType
+			s.set_age = MethodType(set_age,s)
+			
+			//给所有实例都绑定方法
+			Student.set_age = set_age
+			
+			class Student(object):
+				__slots__ = ("name","age")			//用tuple定义允许绑定的属性名称，，这种方法仅对当前实例有效，不能作用于子类
+				
+		2.使用@property
+			class Screen(object):
+				@property
+				def width(self):
+					return self.__width
+
+				@width.setter
+				def width(self,width):
+					self.__width = width
+	
+				@property
+				def height(self):
+					return self.__width
+
+				@height.setter
+				def height(self,height):
+					self.__height = height
+
+				@property
+				def resolution(self):
+					return self.__width * self.__height
+			
+			这里只设置resolution的getter方法，可看成只读属性
+			
+		3.多重继承
+			class Animal(object):
+				pass
+			class Mammal(Animal):
+				pass
+			class Runnable(object):
+				pass
+			class Flyable(object):
+				pass
+				
+			class Dog(Mammal,RunnableMixIn):		//设计类的继承关系时，通常主线都是单一继承下来，需要加入额外的功能，可以通过多重继承可以实现，这种设计称为MixIn
+				pass
+			class Bat(Mammal,Flyable):
+				pass
+			
+			class Father(object):
+				def func(self):
+					print("生父打儿子")
+			class Laowang(object):
+				def func(self):
+					print("老王打儿子")
+				def fun1(self):
+					print("我才是你亲爹")
+			class Stepfather():
+				def func(self):
+					print("我不打你")
+				def fun1(self):
+					print("我不是你爹")
+			class Child(Father,Laowang,Stepfather):
+				pass
+			c = Child()
+			c.func()
+			c.fun1()
+				
+		4.定制类
+			a.__str__
+				class Student(object):
+					def __init__(self, name):
+						self.name = name
+					def __str__(self):
+						return 'Student object (name=%s)' % self.name
+					#__repr__ = __str__			//这一句只有当在命令行时需要，正常代码中测试结果并没有什么区别
+				
+			b.__iter__(使一个类可以被用于循环)
+				class Fib(object):
+					def __init__(self):
+						self.a, self.b = 0, 1 					 # 初始化两个计数器a，b
+
+					def __iter__(self):
+						return self 							 # 实例本身就是迭代对象，故返回自己
+
+					def __next__(self):
+						self.a, self.b = self.b, self.a + self.b # 计算下一个值
+						if self.a > 100000: 					 # 退出循环的条件
+							raise StopIteration()
+						return self.a 							 # 返回下一个值
+				for n in Fib():
+					print(n)
+				
+			c.__getitem__(使类表现的像list那样按照下标取出元素)
+				class Fib(object):
+					def __getitem__(self,n):
+						a,b = 1,1
+						for x in range(n):
+							a,b = b,a+b
+						return a
+					
+				class Fib(object):					//考虑list切片功能
+					def __getitem__(self, n):
+						if isinstance(n,int):
+							a,b = 1,1
+							for x in range(n):
+								a,b = b,a + b
+							return a
+						if isinstance(n,slice):
+							start = n.start
+							stop = n.stop
+							if start is None:
+								start = 0
+							L = []
+							a,b = 1,1
+							for x in range(stop):
+								if x >= start:
+									L.append(a)
+								a,b = b,a + b
+							return L
+				print(Fib()[0:5])
+			
+			d.__getattr__
+											//这种完全动态的调用可以用于REST API的调用
+				class Chain(object):
+					def __init__(self, path=''):
+						self._path = path
+					def __getattr__(self, path):
+						return Chain('%s/%s' % (self._path, path))
+					def users(self,user):
+						return Chain('%s/%s' % (self._path,user))
+					def __str__(self):
+						return self._path
+					__repr__ = __str__
+
+				print(Chain().users('yrs').users('fzl').repos)
+				
+			e.__call__
+				class Student(object):
+					def __init__(self, name):
+						self.name = name
+					def __call__(self):
+						print('My name is %s.' % self.name)
+				s = Student("yrs")
+				s()
+					
+				通过callable()函数判断一个对象是否是“可调用”对象
+
+		5.使用枚举类
+			from enum import Enum ,unique
+
+			Month = Enum("Month",('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'))
+			for name,member in Month.__members__.items():		//这里使用__members__可以将重复的成员也遍历出来(这里比较特殊全都是成员名称，成员名称是不允许重复的)
+				print(name, '=>', member, ',',member.value)
+
+			@unique					//这个装饰器的作用是保证没有重复值
+			class Weekday(Enum):
+				Sun = 0
+				Mon = 1
+				Tue = 2
+				Wed = 3
+				Thu = 4
+				Fri = 5
+				Sat = 6
+			mon = Weekday.Mon
+			mon = Weekday['Mon']
+			mon = Weekday(1)
+			value = mon.value
+					
+		6.使用元类
+			a.type()
+				
+				def fn():
+					pass
+				Hello = type('Hello',(object,),dict(hello=fn))
+					
+				type()函数创建一个class对象需要一次传入3个参数：
+					(1)class的名称
+					(2)继承的父类集合。注意Python支持多重继承，如果只有一个父类，别忘了tuple的氮元素写法
+					(3)class的方法名称与函数绑定，这里我们把函数fn绑定到方法名hello上
+				
+			b.metaclass
+				除了使用type()动态创建类以外，metaclass也可以控制类的创建行为。metaclass，直译为元类
+					
+				class xxMetaclass(type):
+					def __new__(cls,name,bases,attrs):
+					return type.__new__(cls,name,bases,attrs)
+				__new__()方法接收到的参数依次是：
+					(1)当前准备创建的类的对象
+					(2)类的名字
+					(3)类继承的父类集合
+					(4)类的方法集合
+					
+				！！！！！！！暂时理解不透-------以后回来理解
+					
+	八.错误，调试和测试
+		1.错误处理
+			try
+				try:
+				execpt:
+				(else:)
+				finally:
+			
+			logging
+				logging.exception()
+			
+			抛出错误
+				class Error(BaseException):
+					pass
+				raise Error()
+			
+		2.调试
+			logging
+				import logging
+				logging.basicConfig(level = logging.INFO)
+		
+		3.单元测试
+			import unittest
+			class Test(unitest.TestCase):
+				pass
+			
+		4.文档测试
+			def fact(n):
+				'''
+				>>> fact(0)
+				Traceback (most recent call last):
+					...
+				ValueError
+				>>> fact(1)
+				1
+				>>> fact(2)
+				2
+				'''
+				if n < 1:
+					raise ValueError()
+				if n == 1:
+					return 1
+				return n * fact(n - 1)
+
+			if __name__ == '__main__':
+				import doctest
+				doctest.testmod()
+			
+			如果这里的example全部正确，运行结果是无输出的
+	
+	九.IO编程
+		1.文件读写
+			读文件：
+				f = open(path,"r")	//读取文本文件
+				f.read()
+				
+				try:
+					f = open('/path/to/file', 'r')		 等价		with open('/path/to/file', 'r') as f:
+					print(f.read())						<====>			print(f.read())
+				finally:
+					if f:
+						f.close()
+			
+				f = open('/Users/michael/test.jpg', 'rb')		//读取二进制文件，比如图片视频
+				
+				f = open(path,"r",encoding="gbk")				//读取指定非UTF-8编码的文件
+			
+			写文件：
+				f = open(path,"w")
+				f.write("")
+				f.close()
+				
+		2.StringIO和BytesIO
+			StringIO:
+				from io import StringIO
+				f = StringIO()
+				a = f.write("1111")
+				print(a)
+				print(f.getvalue())		//获得写入后的str
+				
+				f = StringIO("Hello!\nPython!!")
+				while 1:
+					s = f.readline()
+					if s == '':
+						break
+					print(s.strip())
+			
+			BytesIO:
+				from io import BytesIO
+				f = BytesIO()
+				f.write("中文".encode("utf-8"))
+				
+		3.操作文件和目录
+			os.path.abspath(".")					//当前目录的绝对路径
+			os.path.join("/users/name","yangrs")	//在某个目录下新建一个目录，此方法将新目录的完整路径表示出来(这样可以避免拼接字符串错误)
+			os.path.mkdir("")						//创建一个目录
+			os.path.rmdir("")						//删除一个目录
+			os.path.split("")						//拆分路径
+			os.path.splitext("")					//直接得到文件扩展名
+			os.rename("a","b")						//将文件a重命名为b
+			os.remove("")							//删除文件
+		
+		编写一个程序，能在当前目录以及当前目录的所有子目录下查找文件名包含指定字符串的文件，并打印出相对路径。
+			def find_p(path,str):
+				if path != None and str != "":
+					for x in os.listdir(path):
+						if os.path.isdir(x):
+							find_p(os.path.join(path,x),str)
+						elif str in x:
+							print(os.path.join(path,x))
+			find_p(os.path.abspath("."),"ba")
+		
+		4.序列化
+			import pickle
+			d = dict(name = "yrs",age = 23)
+			f = open("/home/yangrs/Desktop/pickle.txt","wb")
+			pickle.dump(d,f)
+			f.close()
+			
+			反序列化:
+			f = open(path,"rb")
+			pickle.load(f)
+
+			JSON:
+				import json
+				json.dumps(dict)	//将dict转为json
+				json.dump(dict,f)	//将json写入文件中
+				json.loads(JsonStr)	//将json字符串转成对象
+				json.load(f)		//从文件中将json字符串转为对象
+				
+				Object==>JSON:	//Object不能直接转为json首先要经过dict的变化，同理json转为Object时也需要先经过dict的变化
+				
+					class Student(object):
+						def __init__(self, name, age, score):
+							self.name = name
+							self.age = age
+							self.score = score
+							
+					def student2dict(std):
+						return {
+							'name': std.name,
+							'age': std.age,
+							'score': std.score
+						}
+
+					s = Student('Bob', 20, 88)
+					print(json.dumps(s, default=student2dict))
+					
+					Object转为JSON较为通用的方法是：
+						json.dumps(object,default=lambda obj:obj.__dict__)
+				
+				JSON==>Object:
+					def dict2student(d):
+    					return Student(d['name'], d['age'], d['score'])
+					json.loads(JsonStr,object_hook=dict2student)
+		
+	十.进程和线程
+		1.多进程
+			import os
+			
+			print('Process (%s) start...' % os.getpid())
+			pid = os.fork()										//fork()会返回两个值，值为0时代表子进程
+			print(pid)
+			if pid == 0:
+				print('I am child process (%s) and my parent is %s.' % (os.getpid(), os.getppid()))
+			else:
+				print('I (%s) just created a child process (%s).' % (os.getpid(), pid))
+				
+			muliprocessing：
+				import os
+				from  multiprocessing import Process
+
+				def run_proc(name):
+					print("This child process is named %s(进程号：%s)" %(name,os.getpid()))
+
+				if __name__ == "__main__":
+					print("Now,parent process's pid is %s" % os.getpid())
+					p = Process(target=run_proc,args=("test",))
+					p.start()
+					p.join()									//join()等待子线程运行结束在运行下面的代码
+					print("END")
+			
+			Pool：
+				from multiprocessing import Pool
+				import time,random
+
+				def long_time_task(name):
+					print('Run task %s(进程号:%s)' % (name,os.getpid()))
+					start = time.time()
+					time.sleep(random.random())
+					end = time.time()
+					print('Task %s runs %0.3f seconds...' % (name,(end - start)))
+
+				if __name__ == '__main__':
+					print("Parent process's pid %s..." % os.getpid())
+					p = Pool(4)											//Pool(4)会启动四个子进程
+					for i in range(5):
+						p.apply_async(long_time_task,args=(i,))
+					print("Waiting for all subprocesses done...")
+					p.close()
+					p.join()
+					print("All subprocess done...")
+					
+			子进程：
+				import subprocess
+				print('$ nslookup www.python.org')
+				r = subprocess.call(['nslookup', 'www.python.org'])
+				print(r)
+
+				p = subprocess.Popen(["nslookup"],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+				o,e = p.communicate(b"set q=mx\npython.org\nexit\n")
+				print(o.decode("utf8"))
+				print(e.decode("utf8"))
+			
+			进程间通信：
+				from multiprocessing import Queue
+				def write(q):
+					print("Process to write is %s" % os.getpid())
+					for str in ["A","B","C"]:
+						print("Put %s to queue" % str)
+						q.put(str)
+						time.sleep(1)
+
+				def read(q):
+					print("Process to read is %s" % os.getpid())
+					while 1:
+						str = q.get(1)
+						print("Get %s from queue" % str)
+
+				if __name__ == "__main__":
+					print("Parent process is %s" % os.getpid())
+					q = Queue()
+					process_w = Process(target=write,args=(q,))
+					process_r = Process(target=read,args=(q,))
+					process_w.start()
+					process_r.start()
+					process_w.join()
+					process_r.terminate()
+					
+				在Unix/Linux下，可以使用fork()调用实现多进程。
+
+				要实现跨平台的多进程，可以使用multiprocessing模块。
+
+				进程间通信是通过Queue、Pipes等实现的。
+			
+		2.多线程
+			Python提供了两个模块，_thread和threading  _thread是低级模块，threading是高级模块
+			创建线程的方法：
+				def run_c():
+					pass
+				threading.Thread(target=run_c,name="Thread_run")		//将线程需要执行的方法传入，name是给线程起的名字
+				threading.current_thread(),name							//获取当前线程的名字
+				lock = threading.Lock()									
+				lock.acquire()											//获取锁
+				lock.realse()											//释放锁(获取锁后一定要释放锁，通常放在finally中使用)
+				
+		3.ThreadLocal
+			import threading
+
+			# 创建全局ThreadLocal对象:
+			local_school = threading.local()
+
+			def process_student():
+				# 获取当前线程关联的student:
+				std = local_school.student
+				print('Hello, %s (in %s)' % (std, threading.current_thread().name))
+
+			def process_thread(name):
+				# 绑定ThreadLocal的student:
+				local_school.student = name
+				process_student()
+
+			t1 = threading.Thread(target= process_thread, args=('Alice',), name='Thread-A')
+			t2 = threading.Thread(target= process_thread, args=('Bob',), name='Thread-B')
+			t1.start()
+			t2.start()
+			t1.join()
+			t2.join()
+
+		4.进程 vs. 线程
+			
+		5.分布式进程
+			
+			详见Python/Thread/task_master.py 和 /Python/Thread/task_worker.py
+	
+	十一.正则表达式
+		在正则表达式中，如果给出字符，就是精确匹配
+		
+		\s	 :可以匹配一个空格
+		\d 	 :可以匹配一个数字
+		\w 	 :可以匹配一个字母或数字
+		.  	 :可以匹配任意字符
+		*  	 :可以匹配任意个字符
+		+  	 :表示至少一个字符
+		?  	 :表示0个或1个字符
+		{n}	 :表示n个字符
+		{n,m}:表示n-m个字符
+		特殊字符需要/转义
+		
+		做更精确的匹配，用[]表示范围
+		[0-9a-zA-Z\_]		:可以匹配一个数字，字母或者下划线
+		[0-9a-zA-Z\_]+		:可以匹配一个至少由一个数字、字母或者下划线组成的字符串
+		[0-9a-zA-Z\_]*		:匹配任意个由一个数字、字母或者下划线组成的字符串
+		[0-9a-zA-Z\_]{0,19} :可以匹配一个至少由一个数字、字母或者下划线组成的长度为19的字符串
+		
+		A|B	:可以匹配A或B
+		^	:表示行的开头
+		$	:表示行的结束
+		
+		切分字符串：
+			re.split(r"\s+",str)	//以空格为切割符
+			
+		分组：
+			m = re.match(r'^(\d{3})-(\d{3,8})$', '010-12345')
+			m.group(0)	//是原始字符串
+			m.group(1)	//是子串
+			
+		贪婪匹配：
+			正则匹配默认是贪婪匹配，也就是匹配尽可能多的字符
+			
+			re.match(r'^(\d+?)(0*)$', '102300')	//加个?就可以让\d+采用非贪婪匹配
+			
+		编译：
+			当我们在Python中使用正则表达式时，re模块内部会干两件事情：
+
+				a.编译正则表达式，如果正则表达式的字符串本身不合法，会报错；
+
+				b.用编译后的正则表达式去匹配字符串。
+			
+			r = re.compile(r"....")
+			r.match(str)
+	
+	十二.常用内建模块
+		1.datetime
+			
+			from datetime import datetime
+			
+			当前时间:			datetime.now()
+			获取指定日期和时间:	 datetime(2015.4.19,12,20)
+			datetime转时间戳:	datetime().timestamp()
+			时间戳转换datetime:	datetime.fromtimestamp(t)
+			str转换为datetime:  datetime.strptime("2017-9-28 15:39:39","%Y-%m-%d %H:%M:%S")	
+			datetime转换为str:  datetime.strftime("")
+			
+			时间加减：
+			from date import timedelta
+			datetime.now() + timedelta(hours = 1)
+			
+			本地时间转换为UTC时间：
+				from datetime import datetime,timedelta,timezone
+				utc = timezone(timedelta(hours=))		//创建时区
+				t.replace(tzinfo = utc)					//强制设置时区为
+			
+			时区转换：
+				# 拿到UTC时间，并强制设置时区为UTC+0:00:
+					utc_dt = datetime.utcnow().replace(tzinfo=timezone.utc)
+				# astimezone()将转换时区为北京时间:
+					bj_dt = utc_dt.astimezone(timezone(timedelta(hours=8)))
+		
+		2.collections
+		
+			namedtuple:namedtuple是一个函数，它用来创建一个自定义的tuple对象，并且规定了tuple元素的个数，并可以用属性而不是索引来引用tuple的某个元素
+				Circle = namedtuple('Circle', ['x', 'y', 'r'])
+				c = Cirle(1,2,3)
+				c.x = 1
+				
+			deque:	
+				deque是为了高效实现插入和删除操作的双向列表，适合用于队列和栈
+				from collections import deque
+				q = deque(['a', 'b', 'c'])
+				q.append('x')
+				q.appendleft('y')
+				deque除了实现list的append()和pop()外，还支持appendleft()和popleft()，这样就可以非常高效地往头部添加或删除元素
+			
+			defaultdict:
+				使用dict时，如果引用的Key不存在，就会抛出KeyError。如果希望key不存在时，返回一个默认值，就可以用defaultdict
+				
+		
+		3.base64
+			import base64
+			base64.b64encode(b'binary\x00string')
+			base64.b64decode(b'YmluYXJ5AHN0cmluZw==')
+		
+		4.struct
+		5.hashlib
+			提供了常见的摘要算法，摘要算法又称哈希算法、散列算法。
+			
+			import hashlib
+			md5 = hashlib.md5()
+			md5.update(''.encode("utf-8"))
+			print(md5.hexdigest())
+			
+			sha1 = hashlib.sha1()
+			sha1.update('how to use sha1 in '.encode('utf-8'))
+			sha1.update('python hashlib?'.encode('utf-8'))
+			print(sha1.hexdigest())
+			
+			#加盐
+				db = {}
+
+				def register(user,pwd):
+					db[user] = getMd5PWD(user,pwd)
+
+				def getMd5PWD(user,pwd):
+					str = user + pwd + "dtdream"
+					md5 = hashlib.md5()
+					md5.update(str.encode("utf-8"))
+					return md5.hexdigest()
+
+				def login(user,pwd):
+					if db[user] == getMd5PWD(user,pwd):
+						print(True)
+					else:
+						print(False)
+		
+		6.itertools
+		7.contextlib
+		8.XML
+		9.HTMLParser
+		10.urllib
+	
+	十三.常用第三方模块
+		1.PIL
+			#验证码
+			from PIL import Image,ImageDraw,ImageFont,ImageFilter
+
+			import random
+
+			##随机字母
+			def rndChar():
+				return chr(random.randint(65,90))
+
+			##随机颜色
+			def rndColor():
+				return (random.randint(64,255),random.randint(64,255),random.randint(64,255))
+
+			def rndColor1():
+				return (random.randint(32, 127), random.randint(32, 127), random.randint(32, 127))
+
+			width = 4*60
+			height = 60
+
+			image = Image.new('RGB',(width,height),(255,255,255))
+
+			##创建font对象
+			font = ImageFont.truetype('/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf',36)
+
+			##创建draw对象
+			draw = ImageDraw.Draw(image)
+
+			##填充每个像素
+			for x in range(width):
+				for y in range(height):
+					draw.point((x,y),fill=rndColor())
+
+			##输出文字
+			for t in range(4):
+				draw.text((60 * t + 10, 10), rndChar(), font=font, fill=rndColor1())
+
+			##模糊图片
+			#image = image.filter(ImageFilter.BLUR)
+
+			##保存图片
+			image.save('code1.jpg', 'jpeg')
+
+			##显示图片
+			#image.show()
+	
+	十四.virtualenv
+	
+	十五.图形界面
+	
+	十六.网络编程
+		1.TCP/IP简介
+		2.TCP编程
+		3.UDP编程
+	
+	十七.电子邮件
+		1.SMTP发送邮件
+		2.POP3收取邮件
+	
+	十八.访问数据库
+		1.使用SQLite
+		2.使用MySQL
+		3.使用SQLAlchemy
+	
+	十九.Web开发
+		1.HTTP协议简介
+		2.HTML简介
+		3.WSGI接口
+		4.使用web框架
+		5.使用模板
+	
+	二十.异步IO
+		1.协程
+		2.sayncio
+		3.asunc/await
+		4.aiohttp
+		
+		
 		
