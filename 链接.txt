@@ -46,4 +46,7 @@ Linux下清除缓存多余安装包：http://blog.csdn.net/u010794281/article/details/48901
 Hadoop fs命令：http://www.cnblogs.com/cl1234/p/3566923.html
 
 
+js自动寻路特效链接：http://www.5iweb.com.cn/page-useful-effects/938.html
+
+
 
